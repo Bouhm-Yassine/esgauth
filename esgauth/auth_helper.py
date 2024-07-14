@@ -1,12 +1,11 @@
 from flask import g
-
 from .mongodb import MongoDB
 
 
 class AuthHelper:
     @staticmethod
     def get_logged_in_user():
-        user_email = "bouhm@rdigiapps.onmicrosoft.com" # g.decoded_token['preferred_username'].lower()
+        user_email = g.decoded_token['preferred_username'].lower()
         if not isinstance(user_email, str):
             return {"status": "fail", "message": "No email found"}, 400
         
