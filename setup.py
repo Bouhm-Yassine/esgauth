@@ -4,8 +4,7 @@ from setuptools import setup, find_packages
 requires = [
     "python-dotenv",
     "pymongo==3.10.1",
-    "Flask==1.1.2",
-    "python-dotenv"
+    "Flask==1.1.2"
 ]
 
 setup(
