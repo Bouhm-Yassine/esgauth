@@ -1,15 +1,8 @@
-# mongodb.py
-import os
-from dotenv import load_dotenv
 from pymongo import MongoClient
 
-# Load environment variables from .env file
-load_dotenv()
-
 class MongoDB:
-    def __init__(self):
+    def __init__(self, mongo_uri=None):
         # Get MongoDB URI from environment variables
-        mongo_uri = os.getenv('MONGO_URI')
         if not mongo_uri:
             raise ValueError('MongoDB URI not found in environment variables')
 
