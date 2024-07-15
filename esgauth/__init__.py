@@ -4,5 +4,6 @@ from .mongodb import MongoDB
 from .azure_ad_auth import AzureADAuth
 
 
-AzureADAuth(app.config['AZURE_CLIENT_ID'], app.config['AZURE_AUTHORITY'])
-MongoDB(app.config['MONGO_URI'])
+with app.app_context():
+    AzureADAuth(app.config['AZURE_CLIENT_ID'], app.config['AZURE_AUTHORITY'])
+    MongoDB(app.config['MONGO_URI'])
