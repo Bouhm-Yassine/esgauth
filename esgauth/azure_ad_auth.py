@@ -4,7 +4,7 @@ import requests
 import jwt
 
 from flask import request
-from flask import current_app as app
+from flask import current_app as app, has_app_context
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
@@ -15,14 +15,18 @@ class AzureADAuth:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(AzureADAuth, cls).__new__(cls)
+        return cls._instance
+    
+    @classmethod
+    def _initialize(cls):
+        if not has_app_context():
+            raise RuntimeError("Application context required for AzureADAuth initialization")
 
+        if cls._instance.client_id is None or cls._instance.authority is None:
             cls._instance.client_id = app.config['AZURE_CLIENT_ID']
             cls._instance.authority = app.config['AZURE_AUTHORITY']
             cls._instance.jwks_uri = f"{app.config['AZURE_AUTHORITY']}/discovery/v2.0/keys"
             cls._instance.keys = cls._instance.fetch_public_keys()
-
-        return cls._instance
-    
 
     def fetch_public_keys(self):
         try:
@@ -55,6 +59,8 @@ class AzureADAuth:
     
     @classmethod
     def get_rsa_key(cls, token):
+        cls._initialize()
+
         if not cls._instance.keys:
             raise Exception("RSA keys not available")
         
@@ -93,6 +99,8 @@ class AzureADAuth:
 
     @classmethod
     def decode_token(cls):
+        cls._initialize()
+        
         token = cls._instance.get_token_auth_header()
         rsa_key = cls._instance.get_rsa_key(token)
         try:
