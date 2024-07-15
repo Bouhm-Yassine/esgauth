@@ -17,16 +17,20 @@ class AzureADAuth:
     keys = None
 
     def __new__(cls):
+        print('==== AzureADAuth NEW Called')
         if cls._instance is None:
+            print("===  AzureADAuth NEW IS NONE")
             cls._instance = super(AzureADAuth, cls).__new__(cls)
         return cls._instance
     
     @classmethod
     def _initialize(cls):
+        print('======== AzureADAuth INIT IS CALLED')
         if not has_app_context():
             raise RuntimeError("Application context required for AzureADAuth initialization")
 
         if cls._instance.client_id is None or cls._instance.authority is None:
+            print('=== AzureADAuth VARS ARE NONE')
             cls._instance.client_id = app.config['AZURE_CLIENT_ID']
             cls._instance.authority = app.config['AZURE_AUTHORITY']
             cls._instance.jwks_uri = f"{app.config['AZURE_AUTHORITY']}/discovery/v2.0/keys"

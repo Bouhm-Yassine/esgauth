@@ -4,16 +4,20 @@ class MongoDB:
     _instance = None
 
     def __new__(cls, ):
+        print('==== MongoDB NEW Called')
         if cls._instance is None:
+            print("===  MongoDB NEW IS NONE")
             cls._instance = super(MongoDB, cls).__new__(cls)
         return cls._instance
     
     @classmethod
     def _initialize(cls):
+        print('======== MongoDB INIT IS CALLED')
         if not has_app_context():
             raise RuntimeError("Application context required for MongoDB initialization")
         
         if cls._client is None or cls._db is None:
+            print('=== MongoDB VARS ARE NONE')
             cls._client = MongoClient(app.config['MONGO_URI'])
             cls._db = cls._client.get_default_database()
 
