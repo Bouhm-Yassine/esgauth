@@ -2,6 +2,8 @@ from pymongo import MongoClient
 from flask import has_app_context, current_app as app
 class MongoDB:
     _instance = None
+    _client = None
+    _db = None
 
     def __new__(cls, ):
         print('==== MongoDB NEW Called')
@@ -16,10 +18,10 @@ class MongoDB:
         if not has_app_context():
             raise RuntimeError("Application context required for MongoDB initialization")
         
-        if cls._client is None or cls._db is None:
+        if cls._instance._client is None or cls._instance._db is None:
             print('=== MongoDB VARS ARE NONE')
-            cls._client = MongoClient(app.config['MONGO_URI'])
-            cls._db = cls._client.get_default_database()
+            cls._instance._client = MongoClient(app.config['MONGO_URI'])
+            cls._instance._db = cls._instance._client.get_default_database()
 
     @classmethod
     def create_instance(cls):
@@ -30,4 +32,4 @@ class MongoDB:
     def get_user(cls, query):
         cls.create_instance()
 
-        return cls._db.users.find_one(query)
+        return cls._instance._db.users.find_one(query)
