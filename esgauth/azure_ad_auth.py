@@ -4,7 +4,7 @@ import requests
 import jwt
 
 from flask import request
-
+from flask import current_app as app
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
@@ -12,13 +12,13 @@ from cryptography.hazmat.backends import default_backend
 class AzureADAuth:
     _instance = None
 
-    def __new__(cls, client_id, authority):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super(AzureADAuth, cls).__new__(cls)
 
-            cls._instance.client_id = client_id
-            cls._instance.authority = authority
-            cls._instance.jwks_uri = f"{authority}/discovery/v2.0/keys"
+            cls._instance.client_id = app.config['AZURE_CLIENT_ID']
+            cls._instance.authority = app.config['AZURE_AUTHORITY']
+            cls._instance.jwks_uri = f"{app.config['AZURE_AUTHORITY']}/discovery/v2.0/keys"
             cls._instance.keys = cls._instance.fetch_public_keys()
 
         return cls._instance
