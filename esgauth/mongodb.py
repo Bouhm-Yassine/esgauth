@@ -18,12 +18,12 @@ class MongoDB:
             cls._db = cls._client.get_default_database()
 
     @classmethod
-    def get_db(cls):
-        if cls._db is None:
-            cls._initialize()
-        return cls._db
-    
+    def create_instance(cls):
+        instance = cls.__new__(cls)
+        instance._initialize()
+
     @classmethod
     def get_user(cls, query):
-        db = cls.get_db()
-        return db.users.find_one(query)
+        cls.create_instance()
+
+        return cls._db.users.find_one(query)

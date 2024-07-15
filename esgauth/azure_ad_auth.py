@@ -28,6 +28,11 @@ class AzureADAuth:
             cls._instance.jwks_uri = f"{app.config['AZURE_AUTHORITY']}/discovery/v2.0/keys"
             cls._instance.keys = cls._instance.fetch_public_keys()
 
+    @classmethod
+    def create_instance(cls):
+        instance = cls.__new__(cls)
+        instance._initialize()
+    
     def fetch_public_keys(self):
         try:
             response = requests.get(self.jwks_uri)
@@ -59,7 +64,7 @@ class AzureADAuth:
     
     @classmethod
     def get_rsa_key(cls, token):
-        cls._initialize()
+        cls.create_instance()
 
         if not cls._instance.keys:
             raise Exception("RSA keys not available")
@@ -99,8 +104,8 @@ class AzureADAuth:
 
     @classmethod
     def decode_token(cls):
-        cls._initialize()
-        
+        cls.create_instance()
+
         token = cls._instance.get_token_auth_header()
         rsa_key = cls._instance.get_rsa_key(token)
         try:
