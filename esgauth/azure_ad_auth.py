@@ -11,6 +11,10 @@ from cryptography.hazmat.backends import default_backend
 
 class AzureADAuth:
     _instance = None
+    client_id = None
+    authority = None
+    jwks_uri = None
+    keys = None
 
     def __new__(cls):
         if cls._instance is None:
